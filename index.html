@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .question {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .options {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            padding: 5px;
+        }
+        .submit-btn {
+            display: none;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2>History Quiz</h2>
+    <form id="quizForm">
+        <div id="questionsContainer"></div>
+        <button type="button" class="submit-btn" id="submitBtn" onclick="checkAnswers()">Submit</button>
+    </form>
+    <p id="result"></p>
+</div>
+
+<script>
+    const questions = [
+    { q: "Who read the Brahmi and Kharosthi scripts?", options: ["James Prinsep", "Cunningham", "Wheeler", "John Marshall"], answer: "James Prinsep" },
+    { q: "How many Mahajanapadas were there in the 6th century BCE?", options: ["14", "16", "18", "12"], answer: "16" },
+    { q: "Who was the founder of the Mauryan Empire?", options: ["Ashoka", "Chandragupta Maurya", "Bindusara", "Ajatashatru"], answer: "Chandragupta Maurya" },
+    { q: "The capital of Magadha was initially at ____ before shifting to Pataliputra.", options: ["Vaishali", "Rajagriha", "Ujjain", "Taxila"], answer: "Rajagriha" },
+    { q: "What was the significance of the Battle of Kalinga?", options: ["It marked the rise of Chandragupta Maurya", "It led Ashoka to adopt Buddhism", "It was the first war fought using elephants", "It ended the Mauryan dynasty"], answer: "It led Ashoka to adopt Buddhism" },
+    { q: "Which ruler is known as ‘Devanampiya’ (Beloved of the Gods)?", options: ["Chandragupta Maurya", "Ashoka", "Bindusara", "Samudragupta"], answer: "Ashoka" },
+    { q: "Who wrote the Arthashastra, a treatise on economics and statecraft?", options: ["Kalidasa", "Chanakya", "Megasthenes", "Harisena"], answer: "Chanakya" },
+    { q: "The Indus Valley Civilization was contemporary to which ancient civilization?", options: ["Mesopotamian", "Chinese", "Egyptian", "All of the above"], answer: "All of the above" },
+    { q: "The Mauryan ruler Ashoka followed which religion after the Kalinga War?", options: ["Hinduism", "Jainism", "Buddhism", "Zoroastrianism"], answer: "Buddhism" },
+    { q: "Who was the last ruler of the Nanda dynasty?", options: ["Dhana Nanda", "Mahapadma Nanda", "Bimbisara", "Ajatashatru"], answer: "Dhana Nanda" },
+    { q: "The inscriptions of Ashoka are mostly written in which script?", options: ["Devanagari", "Brahmi", "Persian", "Sanskrit"], answer: "Brahmi" },
+    { q: "Which Mauryan ruler first issued gold coins in India?", options: ["Chandragupta Maurya", "Ashoka", "Kanishka", "Samudragupta"], answer: "Kanishka" },
+    { q: "The first ruler to unify most of India under one empire was:", options: ["Chandragupta Maurya", "Harsha", "Ashoka", "Samudragupta"], answer: "Chandragupta Maurya" },
+    { q: "Which of the following was NOT a Mahajanapada?", options: ["Magadha", "Kosala", "Kuru", "Pandya"], answer: "Pandya" },
+    { q: "Who among the following was the court poet of Samudragupta?", options: ["Kalidasa", "Banabhatta", "Harisena", "Megasthenes"], answer: "Harisena" },
+    { q: "Who was the founder of the Gupta dynasty?", options: ["Samudragupta", "Chandragupta I", "Sri Gupta", "Chandragupta II"], answer: "Sri Gupta" },
+    { q: "The Gupta period is often referred to as the:", options: ["Bronze Age", "Iron Age", "Golden Age", "Silver Age"], answer: "Golden Age" },
+    { q: "The capital of the Gandhara Mahajanapada was:", options: ["Pataliputra", "Taxila", "Kausambi", "Rajgir"], answer: "Taxila" },
+    { q: "The Sangam literature is associated with which language?", options: ["Sanskrit", "Tamil", "Kannada", "Telugu"], answer: "Tamil" },
+    { q: "Who issued the Prayag Prashasti inscription?", options: ["Ashoka", "Chandragupta I", "Samudragupta", "Harshavardhana"], answer: "Samudragupta" },
+    { q: "What are Megaliths?", options: ["Large pillars built in Mauryan times", "Stone structures used to mark burials", "Inscriptions carved on temple walls", "Buddhist monasteries"], answer: "Stone structures used to mark burials" },
+    { q: "Which of the following dynasties ruled the Deccan region?", options: ["Mauryas", "Satavahanas", "Guptas", "Kushanas"], answer: "Satavahanas" },
+    { q: "The first coins bearing the names and images of rulers were issued by:", options: ["Indo-Greeks", "Mauryas", "Kushanas", "Guptas"], answer: "Indo-Greeks" },
+    { q: "Who was the ruler of Magadha during Alexander’s invasion?", options: ["Bimbisara", "Ajatashatru", "Dhana Nanda", "Bindusara"], answer: "Dhana Nanda" },
+    { q: "The Indo-Greek ruler who issued bilingual coins in Greek and Kharosthi was:", options: ["Menander", "Kanishka", "Rudradaman", "Samudragupta"], answer: "Menander" },
+    { q: "Which Chinese traveler visited India during Harsha’s reign?", options: ["Fa-Hien", "Hiuen Tsang", "Megasthenes", "Ibn Battuta"], answer: "Hiuen Tsang" },
+    { q: "Who founded the Asiatic Society of Bengal?", options: ["James Prinsep", "Colin Mackenzie", "William Jones", "Alexander Cunningham"], answer: "William Jones" },
+    { q: "Who deciphered the Brahmi script?", options: ["William Jones", "James Prinsep", "John Marshall", "Max Muller"], answer: "James Prinsep" },
+    { q: "The Allahabad Pillar Inscription was composed by:", options: ["Harisena", "Kalidasa", "Megasthenes", "Banabhatta"], answer: "Harisena" },
+    { q: "Who was the court poet of Chandragupta II?", options: ["Kalidasa", "Harisena", "Banabhatta", "Aryabhata"], answer: "Kalidasa" },
+    { q: "The Gupta period saw major developments in:", options: ["Architecture", "Literature", "Science", "All of the above"], answer: "All of the above" },
+    { q: "The Mauryan Empire had how many major political centers?", options: ["3", "5", "7", "9"], answer: "5" },
+    { q: "Who among the following was known as ‘Deva Putra’?", options: ["Kanishka", "Chandragupta Maurya", "Samudragupta", "Harshavardhana"], answer: "Kanishka" },
+    { q: "The Dhamma Mahamattas were officials appointed by:", options: ["Ashoka", "Bimbisara", "Samudragupta", "Harshavardhana"], answer: "Ashoka" },
+    { q: "What was ‘Agrahara’?", options: ["Land allotted to Brahmins", "A Buddhist monastery", "A trade guild", "A temple"], answer: "Land allotted to Brahmins" },
+    { q: "Which empire is associated with the concept of ‘Dharma Vijaya’ (Victory through Dharma)?", options: ["Maurya", "Gupta", "Chola", "Kushana"], answer: "Maurya" },
+    { q: "Who among the following repaired Sudarshan Lake?", options: ["Rudradaman I", "Ashoka", "Kanishka", "Samudragupta"], answer: "Rudradaman I" },
+    { q: "Who collected thousands of inscriptions in Sanskrit and Dravidian languages?", options: ["Alexander Cunningham", "Colin Mackenzie", "William Jones", "James Prinsep"], answer: "Colin Mackenzie" },
+    { q: "The first gold coins in India were issued by:", options: ["Mauryas", "Kushanas", "Guptas", "Satavahanas"], answer: "Kushanas" },
+    { q: "The Kharosthi script was derived from which script?", options: ["Greek", "Brahmi", "Persian", "Aramaic"], answer: "Aramaic" }
+];
+
+
+    function generateQuestions() {
+        const container = document.getElementById("questionsContainer");
+        questions.forEach((question, index) => {
+            const questionDiv = document.createElement("div");
+            questionDiv.classList.add("question");
+
+            questionDiv.innerHTML = `
+                <p>${index + 1}. ${question.q}</p>
+                <div class="options">
+                    ${question.options.map(option => `
+                        <label>
+                            <input type="radio" name="q${index}" value="${option}" onclick="checkAllAnswered()"> ${option}
+                        </label>`).join("")}
+                </div>
+            `;
+            container.appendChild(questionDiv);
+        });
+    }
+
+    function checkAllAnswered() {
+        const allAnswered = questions.every((_, index) => 
+            document.querySelector(`input[name="q${index}"]:checked`));
+        
+        document.getElementById("submitBtn").style.display = allAnswered ? "block" : "none";
+    }
+
+    function checkAnswers() {
+        let score = 0;
+        questions.forEach((question, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            if (selected && selected.value === question.answer) {
+                score++;
+            }
+        });
+
+        document.getElementById("result").innerHTML = `You scored ${score} out of ${questions.length}!`;
+    }
+
+    window.onload = generateQuestions;
+</script>
+
+</body>
+</html>
